@@ -3,5 +3,6 @@
       "dockerfile":"../Dockerfile"
     },
     "workspaceFolder": "/app", 
-    "forwardPorts": [8000]
+    "forwardPorts": [8000],
+    "postCreateCommand": "python3 /app/main.py"
 }
