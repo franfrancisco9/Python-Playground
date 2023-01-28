@@ -1,53 +1,24 @@
-import http.server
+#!/usr/bin/env python
+from simple_http_server import server, route
 import socketserver
 import subprocess
 # set command to ruyn the caesar program
-cmd = "python3 .."  + r'"\Task 1A\caesar"'
+cmd = "./caesar"
 
 PORT = 8000
 
-class GetHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/":
-            #explain how to use the program
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.wfile.write(bytes("Usage: YOUR_URL/caesar/[encrypt/decrypt]?message=[message]", "utf-8"))
+@route("/")
+def index():
+    return "<!DOCTYPE html><html><body><h1>Usage: /caesar/[encrypt/decrypt]?message=[message]</h1></body></html>"
 
-        # check if the url is encrypt or decrypt
-        elif self.path.startswith("/caesar/encrypt"):
-            # get the message
-            message = self.path.split("=")[1]
-            # run the caesar program
-            output = subprocess.check_output(cmd + " encrypt " + message, shell=True)
-            # send the message back to the user
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            message= b'You send to encrypt:\n' + message.encode() + b'\n and the result is:\n' + output
-            self.wfile.write(message)
-        elif self.path.startswith("/caesar/decrypt"):
-            # get the message
-            message = self.path.split("=")[1]
-            # run the caesar program
-            output = subprocess.check_output(cmd + " decrypt " + message, shell=True)
-            # send the message back to the user
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            message= b'You send to decrypt:\n' + message.encode() + b'\n and the result is:\n' + output
-            self.wfile.write(message)
-        else:
-            # send error message
-            self.send_response(404)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.wfile.write(bytes("404 Not Found", "utf-8"))
+@route("/caesar/encrypt", method="GET")
+def encrypt(message):
+    output = subprocess.check_output(cmd + " encrypt " + message, shell=True)
+    return "<!DOCTYPE html><html><body><h1>You sent to encrypt:</h1><p>" + message + "</p><h1>The result is:</h1><p>" + output.decode() + "</p></body></html>"
 
-Handler = GetHandler
+@route("/caesar/decrypt", method="GET")
+def decrypt(message):
+    output = subprocess.check_output(cmd + " decrypt " + message, shell=True)
+    return "<!DOCTYPE html><html><body><h1>You sent to decrypt:</h1><p>" + message + "</p><h1>The result is:</h1><p>" + output.decode() + "</p></body></html>"
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print("serving at port", PORT)
-    httpd.serve_forever()
-
+server.start(port = PORT)

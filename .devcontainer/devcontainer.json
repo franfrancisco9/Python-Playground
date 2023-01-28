@@ -1,0 +1,7 @@
+{
+    "build":{
+      "dockerfile":"../Dockerfile"
+    },
+    "workspaceFolder": "/app", 
+    "forwardPorts": [8000]
+}
