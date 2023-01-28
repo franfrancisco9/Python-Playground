@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import sys
+
+class Caesar_Cipher():
+    '''
+    Class for encrypting and decrypting messages using 
+    the Caesar Cipher.
+    '''
+    def __init__(self, shift):
+        # shift is the number of shifts
+        # input is the number of letters to shift
+        # by, so we subtract 1
+        self.shift = shift - 1
+        
+    def encrypt(self, plain_message):
+        encrypted_message = ""
+        for letter in plain_message:
+            if letter.isupper():
+                new_letter = chr((ord(letter) - self.shift - 65) % 26 + 65)
+                encrypted_message += new_letter
+            else:
+                new_letter = chr((ord(letter) - self.shift - 97) % 26 + 97)
+                encrypted_message += chr((ord(letter) - self.shift - 97) % 26 + 97)
+                
+        return encrypted_message
+    
+    def decrypt(self, encrypted_message):
+        plain_message = ""
+        for letter in encrypted_message:
+            if letter.isupper():
+                old_letter = chr((ord(letter) + self.shift - 65) % 26 + 65)
+                plain_message += old_letter
+            else:
+                old_letter = chr((ord(letter) + self.shift - 97) % 26 + 97)
+                plain_message += old_letter
+
+        return plain_message
+    
+    def message_check(self, message):
+        for letter in message:
+            if not letter.isalpha():
+                return False
+        return True
+
+if __name__ == "__main__":
+    # expect first argument to be encrypt or decrypt
+    # second argument to be the message
+    # if no arguments are given explain how to use the program
+    cipher = Caesar_Cipher(4)
+    if len(sys.argv) == 1:
+        print("Usage: ./caesar [encrypt/decrypt] [message]")
+        sys.exit(1)
+    elif len(sys.argv) == 2:
+        # if only one argument is given, explain how to use the program
+        print("Usage: ./caesar [encrypt/decrypt] [message]")
+        sys.exit(1)
+    elif len(sys.argv) == 3:
+        # check if second argument is encrypt or decrypt
+        if sys.argv[1] == "encrypt" or sys.argv[1] == "decrypt":
+            # check if the message is valid
+            if cipher.message_check(sys.argv[2]):
+                if sys.argv[1] == "encrypt":
+                    print(cipher.encrypt(sys.argv[2]))
+                else:
+                    print(cipher.decrypt(sys.argv[2]))
+            else:
+                print("Invalid input, should be only letters")
+        else:
+            # if second argument is not encrypt or decrypt, explain how to use the program
+            print("Usage: ./caesar [encrypt/decrypt] [message]")
+            sys.exit(1)
+    else:
+        # if more than 3 arguments are given, explain how to use the program
+        print("Usage: ./caesar [encrypt/decrypt] [message]")
+        sys.exit(1)
+
+    #print(cipher.encrypt("HELLO"))
+    #print(cipher.decrypt("EBIIL"))
