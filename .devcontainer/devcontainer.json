@@ -1,0 +1,8 @@
+{
+    "build":{
+      "dockerfile":"../Dockerfile"
+    },
+    "workspaceFolder": "/app", 
+    "forwardPorts": [8000],
+    "postCreateCommand": "python3 /app/main.py"
+}
