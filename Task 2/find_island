@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+import numpy as np
+
+SIZE = 10
+
+def generate_matrix(size = SIZE):
+    return np.random.choice([x for x in range(0, 5)], size * size).reshape(size, size)
+
+def print_matrix(matrix):
+    for x in range(len(matrix)):
+        for y in range(len(matrix[0])):
+            print(matrix[x][y], end=' ')
+        print()
+
+def find_island(matrix, x, y, island, visited, prev_number=None):
+    if prev_number is None:
+        prev_number = matrix[x][y]
+    
+    if matrix[x][y] == prev_number and (x, y) not in visited:
+        island.append((x, y))
+        visited.append((x, y))
+        if x > 0:
+            find_island(matrix, x-1, y, island, visited, prev_number)
+        if y > 0:
+            find_island(matrix, x, y-1, island, visited, prev_number)
+        if x < len(matrix) - 1:
+            find_island(matrix, x+1, y, island, visited, prev_number)
+        if y < len(matrix[0]) - 1:
+            find_island(matrix, x, y+1, island, visited, prev_number)
+
+    return island
+
+# The function find_largest_island will call the function find_island for every element in the matrix
+# and will save the island with the biggest size.
+def find_largest_island(matrix):
+    largest_island = []
+    for x in range(len(matrix)):
+        for y in range(len(matrix[0])):
+            island = find_island(matrix, x, y, [], [])
+            if len(island) > len(largest_island):
+                largest_island = island
+
+    return largest_island
+
+# Print the island with X for every element in the island
+def print_largest_island(matrix):
+    largest_island = find_largest_island(matrix)
+    for x in range(len(matrix)):
+        for y in range(len(matrix[0])):
+            if (x, y) in largest_island:
+                print('X', end=' ')
+            else:
+                print('.', end=' ')
+        print()
+
+
+
+if __name__ == '__main__':
+    MATRIX = generate_matrix()
+    print_matrix(MATRIX)
+    print()
+    print_largest_island(MATRIX)
