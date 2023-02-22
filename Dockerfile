@@ -13,6 +13,8 @@ ADD .${task2}/find_island .
 COPY .${task1b}/requirements.txt .
 
 RUN pip install -r requirements.txt
+RUN ["chmod", "+x", "./caesar"]
+RUN ["chmod", "+x", "./find_island"]
 
 EXPOSE 8000
 
